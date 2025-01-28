@@ -23,7 +23,11 @@ for year in years:
     num_col = data_net.shape[1]
     print(f"Nombre de colonnes : {num_col}")
 
+    print(data_net.head())
+    
+    data_net.to_csv(f"nettoyé/london_accidents_{year}.csv", index=False)
 
+    print(f"✅ Fichier london_accidents_{year}_nettoye.csv sauvegardé avec succès !\n")
 
 
 
