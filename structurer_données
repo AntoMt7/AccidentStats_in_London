@@ -1,0 +1,43 @@
+import pandas as pd
+import ast  # Pour parser les chaînes JSON
+
+# Charger le fichier CSV
+df = pd.read_csv("london_accidents_2014.csv")
+
+# Fonction pour parser les chaînes JSON
+def parse_json_column(column):
+    try:
+        return ast.literal_eval(column)  # Convertit la chaîne en liste de dictionnaires
+    except (ValueError, SyntaxError):
+        return []  # Retourne une liste vide en cas d'erreur
+
+# Appliquer la fonction aux colonnes `casualties` et `vehicles`
+df["casualties"] = df["casualties"].apply(parse_json_column)
+df["vehicles"] = df["vehicles"].apply(parse_json_column)
+
+# Exploser les colonnes `casualties` et `vehicles`
+exploded_casualties = df.explode("casualties")
+exploded_vehicles = df.explode("vehicles")
+
+# Normaliser les colonnes `casualties` et `vehicles` pour créer des colonnes distinctes
+casualties_normalized = pd.json_normalize(exploded_casualties["casualties"])
+vehicles_normalized = pd.json_normalize(exploded_vehicles["vehicles"])
+
+# Ajouter un préfixe aux colonnes normalisées pour éviter les conflits de noms
+casualties_normalized = casualties_normalized.add_prefix("casualty_")
+vehicles_normalized = vehicles_normalized.add_prefix("vehicle_")
+
+# Concaténer les données normalisées avec le DataFrame original
+df_final = pd.concat([
+    exploded_casualties.drop(columns=["casualties", "vehicles"]).reset_index(drop=True),
+    casualties_normalized,
+], axis=1)
+
+df_final = pd.concat([
+    exploded_vehicles.drop(columns=["casualties", "vehicles"]).reset_index(drop=True),
+    vehicles_normalized,
+], axis=1)
+
+# Sauvegarder le résultat dans un nouveau fichier CSV
+df_final.to_csv("london_accidents_2014_st.csv", index=False)
+print("Données structurées sauvegardées dans london_accidents_structured.csv.")
