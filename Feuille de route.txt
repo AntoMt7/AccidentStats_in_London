@@ -1,0 +1,17 @@
+5. Analyse des données de transport public
+
+Data Engineering :
+
+Collecte des données : Récupère les données de transport public à partir d'API ouvertes (comme celles de la RATP ou d'autres services de transport).
+
+Traitement des données : Nettoie les données, calcule les temps d'attente moyens, les retards, etc.
+
+Orchestration : Utilise Apache Airflow pour orchestrer les tâches de collecte et de traitement.
+
+Data Storage :
+
+Stocke les données dans une base de données relationnelle (comme PostgreSQL) ou un entrepôt de données (comme BigQuery).
+
+Data Visualisation :
+
+Utilise des outils comme Tableau ou Power BI pour créer des cartes interactives montrant les temps d'attente, les retards, etc.
